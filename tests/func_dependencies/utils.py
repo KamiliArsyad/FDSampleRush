@@ -8,7 +8,7 @@ class TestFunctionalDependencies(unittest.TestCase):
     def setUp(self):
         # R(A,B,C,D,E) with FDs: {{A,B} -> {C,D,E}, {A,C} -> {B,D,E}, B -> C, C -> B, C -> D, B -> E, C -> E}
         # Binary: 00011 -> 11100, 00101 -> 11010, 010 -> 100, 100 -> 010, 0100 -> 1000, 00010 -> 10000, 00100 -> 10000
-        self.fd_2 = [(BinaryWord(5, 3), BinaryWord(5, 28)), (BinaryWord(5, 5), BinaryWord(5, 29)),
+        self.fd_2 = [(BinaryWord(5, 3), BinaryWord(5, 28)), (BinaryWord(5, 5), BinaryWord(5, 26)),
                       (BinaryWord(5, 2), BinaryWord(5, 4)), (BinaryWord(5, 4), BinaryWord(5, 2)),
                       (BinaryWord(5, 4), BinaryWord(5, 8)), (BinaryWord(5, 2), BinaryWord(5, 16)),
                       (BinaryWord(5, 4), BinaryWord(5, 16))]
