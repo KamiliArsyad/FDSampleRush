@@ -38,6 +38,9 @@ class BinaryWord:
     def ones(self):
         return BinaryWord(self.length, 2 ** self.length - 1)
 
+    def zeroes(self):
+        return BinaryWord(self.length, 0)
+
     def __and__(self, other):
         return BinaryWord(self.length, self.value & other.value)
 
@@ -55,6 +58,9 @@ class BinaryWord:
 
     def __eq__(self, other):
         return self.value == other.value
+
+    def __ne__(self, other):
+        return self.value != other.value
 
     def __len__(self):
         return self.length
