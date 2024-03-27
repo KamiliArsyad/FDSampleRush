@@ -34,5 +34,23 @@ class BinaryWord:
             raise ValueError("Bit position out of range")
         return (self.value >> position) & 1
 
+    def __and__(self, other):
+        return BinaryWord(self.length, self.value & other.value)
+
+    def __or__(self, other):
+        return BinaryWord(self.length, self.value | other.value)
+
+    def __xor__(self, other):
+        return BinaryWord(self.length, self.value ^ other.value)
+
+    def __invert__(self):
+        return BinaryWord(self.length, ~self.value & ((1 << self.length) - 1))
+
     def to_int(self):
         return self.value
+
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __len__(self):
+        return self.length
