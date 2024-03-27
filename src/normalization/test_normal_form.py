@@ -28,7 +28,7 @@ def is_3nf(fds: list[(BinaryWord, BinaryWord)]) -> bool:
     Checks if a relation is in 3NF given a set of functional dependencies.
 
     Args:
-        fds list of tuples: A list where each tuple represents a functional dependency
+        fds (list of tuples): A list where each tuple represents a functional dependency
                             as a pair of BinaryWords (left_side, right_side).
 
     Returns:
