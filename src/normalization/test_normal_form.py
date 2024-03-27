@@ -1,6 +1,6 @@
 from functools import reduce
 
-from src.func_dependencies.utils import candidate_keys, is_superkey
+from src.func_dependencies.utils import candidate_keys, is_superkey, is_subset_of, is_proper_subset_of
 from src.utils.binary_word import BinaryWord
 
 
@@ -37,7 +37,7 @@ def is_3nf(fds: list[(BinaryWord, BinaryWord)]) -> bool:
     prime_attributes = reduce(lambda acc, curr: acc | curr, candidate_keys(fds))
 
     for left_side, right_side in fds:
-        is_trivial = (left_side & right_side) == right_side
+        is_trivial = is_subset_of(right_side, left_side)
 
         # If FD has a transitive dependency
         # (i.e. a dependency X -> Y where neither X nor Y contain prime attributes).
@@ -45,4 +45,29 @@ def is_3nf(fds: list[(BinaryWord, BinaryWord)]) -> bool:
                 left_side & prime_attributes == prime_attributes.zeroes() and
                 right_side & prime_attributes == prime_attributes.zeroes()):
             return False
+    return True
+
+
+def is_2nf(fds: list[(BinaryWord, BinaryWord)]) -> bool:
+    """
+    Checks if a relation is in 2NF given a set of functional dependencies.
+
+    Args:
+        fds (list of tuples): A list where each tuple represents a functional dependency
+                              as a pair of BinaryWords (left_side, right_side).
+
+    Returns:
+        bool: True if the relation is in 2NF, False otherwise.
+    """
+    candidates = candidate_keys(fds)
+
+    for left_side, right_side in fds:
+        is_trivial = is_subset_of(right_side, left_side)
+
+        # If FD has a partial dependency
+        # (i.e. a candidate key C and a dependency X -> Y where X is a proper subset of C)
+        if not is_trivial:
+            for candidate in candidates:
+                if is_proper_subset_of(left_side, candidate):
+                    return False
     return True

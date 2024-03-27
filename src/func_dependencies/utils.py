@@ -76,9 +76,37 @@ def candidate_keys(fds: list[(BinaryWord, BinaryWord)]) -> set[BinaryWord]:
 
             # If key is a proper superset of another key,
             # add key to the set of non-minimal keys.
-            if key != other_key and (key & other_key) == other_key and key > other_key:
+            if key != other_key and is_proper_subset_of(other_key, key):
                 non_minimal_keys.add(key)
                 break
 
     # Return the set difference of superkeys and non-minimal keys (i.e. minimal superkeys)
     return superkeys - non_minimal_keys
+
+
+def is_subset_of(left_attributes: BinaryWord, right_attributes: BinaryWord) -> bool:
+    """
+    Checks whether the left set of attributes is a subset of the right set of attributes.
+
+    Args:
+        left_attributes: The left set of attributes.
+        right_attributes: The right set of attributes.
+
+    Returns:
+        True if right_attributes are subset of left_attributes, False otherwise.
+    """
+    return (left_attributes & right_attributes) == left_attributes
+
+
+def is_proper_subset_of(left_attributes: BinaryWord, right_attributes: BinaryWord) -> bool:
+    """
+    Checks whether the left set of attributes is a proper subset of the right set of attributes.
+
+    Args:
+        left_attributes: The left set attributes.
+        right_attributes: The right set attributes.
+
+    Returns:
+        True if right_attributes are proper subset of left_attributes
+    """
+    return (left_attributes & right_attributes) == left_attributes and left_attributes < right_attributes

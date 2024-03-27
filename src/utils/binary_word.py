@@ -10,6 +10,7 @@ class BinaryWord:
         set_bit(position, bit): Returns a new BinaryWord instance with a bit set at the specified position.
         ones(): Returns a new BinaryWord instance with all bits set to 1.
     """
+
     def __init__(self, length, value=0):
         self.length = length
         self.value = value & ((1 << length) - 1)
@@ -61,6 +62,12 @@ class BinaryWord:
 
     def __ne__(self, other):
         return self.value != other.value
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+    def __gt__(self, other):
+        return self.value > other.value
 
     def __len__(self):
         return self.length

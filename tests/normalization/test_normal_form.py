@@ -1,5 +1,5 @@
 import unittest
-from src.normalization.test_normal_form import is_bcnf, is_3nf
+from src.normalization.test_normal_form import is_bcnf, is_3nf, is_2nf
 from src.utils.binary_word import BinaryWord
 
 
@@ -32,19 +32,39 @@ class TestBCNFCheck(unittest.TestCase):
 class Test3NFCheck(unittest.TestCase):
     def setUp(self):
         # A -> B, B -> C
-        self.fd_2nf_not_3nf = [(BinaryWord(3, 1), BinaryWord(3, 2)), (BinaryWord(3, 2), BinaryWord(3, 4))]
+        self.fd_2nf = [(BinaryWord(3, 1), BinaryWord(3, 2)), (BinaryWord(3, 2), BinaryWord(3, 4))]
 
         # AB -> CDE, AC -> BDE, BC -> C
         self.fd_bcnf = [(BinaryWord(5, 3), BinaryWord(5, 28)), (BinaryWord(5, 5), BinaryWord(5, 26)),
                         (BinaryWord(5, 6), BinaryWord(5, 4))]
 
     def test_is_3nf(self):
-        self.assertFalse(
-            is_3nf(self.fd_2nf_not_3nf)
-        )
-
         self.assertTrue(
             is_3nf(self.fd_bcnf)
+        )
+
+    def test_is_not_3nf(self):
+        self.assertFalse(
+            is_3nf(self.fd_2nf)
+        )
+
+
+class Test2NFCheck(unittest.TestCase):
+    def setUp(self):
+        # A -> B, B -> C
+        self.fd_2nf = [(BinaryWord(3, 1), BinaryWord(3, 2)), (BinaryWord(3, 2), BinaryWord(3, 4))]
+
+        # AB -> C, B -> C
+        self.fd_1nf = [(BinaryWord(3, 3), BinaryWord(3, 4)), (BinaryWord(3, 2), BinaryWord(3, 4))]
+
+    def test_is_2nf(self):
+        self.assertTrue(
+            is_2nf(self.fd_2nf)
+        )
+
+    def test_is_not_2nf(self):
+        self.assertFalse(
+            is_2nf(self.fd_1nf)
         )
 
 
