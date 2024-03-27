@@ -8,6 +8,7 @@ class BinaryWord:
 
     Methods:
         set_bit(position, bit): Returns a new BinaryWord instance with a bit set at the specified position.
+        ones(): Returns a new BinaryWord instance with all bits set to 1.
     """
     def __init__(self, length, value=0):
         self.length = length
@@ -34,6 +35,9 @@ class BinaryWord:
             raise ValueError("Bit position out of range")
         return (self.value >> position) & 1
 
+    def ones(self):
+        return BinaryWord(self.length, 2 ** self.length - 1)
+
     def __and__(self, other):
         return BinaryWord(self.length, self.value & other.value)
 
@@ -54,3 +58,6 @@ class BinaryWord:
 
     def __len__(self):
         return self.length
+
+    def __hash__(self):
+        return hash((self.value, self.length))
