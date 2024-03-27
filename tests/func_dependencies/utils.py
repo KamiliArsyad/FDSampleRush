@@ -1,5 +1,5 @@
 import unittest
-from src.func_dependencies.utils import attribute_closure, is_superkey
+from src.func_dependencies.utils import attribute_closure, is_superkey, candidate_keys
 from src.utils.binary_word import BinaryWord
 
 
@@ -38,6 +38,12 @@ class TestFunctionalDependencies(unittest.TestCase):
             attribute_closure(BinaryWord(5, 9), self.fd_2),
             BinaryWord(5, 9),
             "{A,D}+ = {A,D} = binary 10001"
+        )
+
+    def test_candidate_keys(self):
+        self.assertEqual(
+            candidate_keys(self.fd_2),
+            {BinaryWord(5, 3), BinaryWord(5, 5)}
         )
 
 
