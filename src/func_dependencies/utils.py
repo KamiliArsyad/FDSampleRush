@@ -76,7 +76,7 @@ def candidate_keys(fds: list[(BinaryWord, BinaryWord)]) -> set[BinaryWord]:
 
             # If key is a proper superset of another key,
             # add key to the set of non-minimal keys.
-            if key != other_key and (key & other_key) == key and key > other_key:
+            if key != other_key and (key & other_key) == other_key and key > other_key:
                 non_minimal_keys.add(key)
                 break
 
