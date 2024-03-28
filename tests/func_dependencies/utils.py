@@ -1,5 +1,5 @@
 import unittest
-from src.func_dependencies.utils import attribute_closure, is_superkey, candidate_keys
+from src.func_dependencies.utils import attribute_closure, is_superkey, candidate_keys, attribute_combinations
 from src.utils.binary_word import BinaryWord
 
 
@@ -9,9 +9,12 @@ class TestFunctionalDependencies(unittest.TestCase):
         # R(A,B,C,D,E) with FDs: {{A,B} -> {C,D,E}, {A,C} -> {B,D,E}, B -> C, C -> B, C -> D, B -> E, C -> E}
         # Binary: 00011 -> 11100, 00101 -> 11010, 010 -> 100, 100 -> 010, 0100 -> 1000, 00010 -> 10000, 00100 -> 10000
         self.fd_2 = [(BinaryWord(5, 3), BinaryWord(5, 28)), (BinaryWord(5, 5), BinaryWord(5, 26)),
-                      (BinaryWord(5, 2), BinaryWord(5, 4)), (BinaryWord(5, 4), BinaryWord(5, 2)),
-                      (BinaryWord(5, 4), BinaryWord(5, 8)), (BinaryWord(5, 2), BinaryWord(5, 16)),
-                      (BinaryWord(5, 4), BinaryWord(5, 16))]
+                     (BinaryWord(5, 2), BinaryWord(5, 4)), (BinaryWord(5, 4), BinaryWord(5, 2)),
+                     (BinaryWord(5, 4), BinaryWord(5, 8)), (BinaryWord(5, 2), BinaryWord(5, 16)),
+                     (BinaryWord(5, 4), BinaryWord(5, 16))]
+
+        self.trivial_fd = [(BinaryWord(5, 1), BinaryWord(5, 1)), (BinaryWord(5, 2), BinaryWord(5, 2)),
+                           (BinaryWord(5, 12), BinaryWord(5, 12))]
 
     def test_is_superkey(self):
         # Test case 1
@@ -44,6 +47,18 @@ class TestFunctionalDependencies(unittest.TestCase):
         self.assertEqual(
             candidate_keys(self.fd_2),
             {BinaryWord(5, 3), BinaryWord(5, 5)}
+        )
+
+        self.assertEqual(
+            candidate_keys(self.trivial_fd),
+            {BinaryWord(5).ones()}
+        )
+
+    def test_attribute_combinations(self):
+        self.assertEqual(
+            attribute_combinations(4, 2),
+            {BinaryWord(4, 3), BinaryWord(4, 5), BinaryWord(4, 9),
+             BinaryWord(4, 6), BinaryWord(4, 10), BinaryWord(4, 12)}
         )
 
 

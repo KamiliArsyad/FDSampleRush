@@ -8,6 +8,7 @@ class BinaryWord:
 
     Methods:
         set_bit(position, bit): Returns a new BinaryWord instance with a bit set at the specified position.
+        pop_count(): Returns the population count (i.e. number of bit 1) of the binary word.
         ones(): Returns a new BinaryWord instance with all bits set to 1.
     """
 
@@ -35,6 +36,14 @@ class BinaryWord:
         if not 0 <= position < self.length:
             raise ValueError("Bit position out of range")
         return (self.value >> position) & 1
+
+    def pop_count(self):
+        count = 0
+        byte = self.value
+        while byte:
+            count += byte & 1
+            byte >>= 1
+        return count
 
     def ones(self):
         return BinaryWord(self.length, 2 ** self.length - 1)
