@@ -91,7 +91,7 @@ def non_trivial(fds: list[(BinaryWord, BinaryWord)]) -> list[(BinaryWord, Binary
     Returns:
         list[(BinaryWord, BinaryWord)]: List of functional dependencies without trivial dependencies.
     """
-    return filter(lambda fd: is_subset_of(fd[1], fd[2]), fds)
+    return list(filter(lambda fd: not is_subset_of(fd[1], fd[0]), fds))
 
 
 def attribute_combinations(n: int, c: int, exclude: set[BinaryWord] = None) -> set[BinaryWord]:

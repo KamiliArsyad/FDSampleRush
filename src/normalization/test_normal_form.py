@@ -34,16 +34,17 @@ def is_3nf(fds: list[(BinaryWord, BinaryWord)]) -> bool:
     Returns:
         bool: True if the relation is in 3NF, False otherwise.
     """
-    prime_attributes = reduce(lambda acc, curr: acc | curr, candidate_keys(fds))
+    cand_keys = candidate_keys(fds)
+    prime_attributes = reduce(lambda acc, curr: acc | curr, cand_keys)
 
     for left_side, right_side in fds:
         is_trivial = is_subset_of(right_side, left_side)
 
         # If FD has a transitive dependency
-        # (i.e. a dependency X -> Y where neither X nor Y contain prime attributes).
+        # (i.e. a dependency X -> Y where X is not a superkey and Y is not a prime attribute).
         if (not is_trivial and
-                left_side & prime_attributes == prime_attributes.zeroes() and
-                right_side & prime_attributes == prime_attributes.zeroes()):
+                not is_subset_of(right_side, prime_attributes) and
+                not reduce(lambda acc, curr: acc or is_subset_of(curr, left_side), cand_keys, False)):
             return False
     return True
 
