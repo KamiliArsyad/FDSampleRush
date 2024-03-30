@@ -37,6 +37,8 @@ class BinaryWordGenerator:
         elif isinstance(distribution, rv_continuous):
             # Using SciPy distribution to generate a number
             value = int(distribution.rvs(**kwargs) * (2**length))
+        elif callable(distribution):
+            value = int(distribution(**kwargs))
         else:
             raise ValueError("Unsupported distribution type")
         return BinaryWord(length, value)
@@ -89,8 +91,8 @@ class FDGenerator:
                                            where each BinaryWord is of length k.
         """
         if self.distribution:
-            w1_value = self.distribution(**self.kwargs) * (2 ** self.k)
-            w2_value = self.distribution(**self.kwargs) * (2 ** self.k)
+            w1_value = BinaryWordGenerator.from_distribution(self.k, self.distribution, **self.kwargs).value
+            w2_value = BinaryWordGenerator.from_distribution(self.k, self.distribution, **self.kwargs).value
         else:
             w1 = BinaryWordGenerator.random(self.k)
             w2 = BinaryWordGenerator.random(self.k)
@@ -99,3 +101,14 @@ class FDGenerator:
         w1 = BinaryWord(self.k, int(w1_value))
         w2 = BinaryWord(self.k, int(w2_value))
         return (w1, w2)
+
+    def generate_m_fds(self, m: int) -> list[(BinaryWord, BinaryWord)]:
+        """
+        Generates a list of m unique functional dependencies.
+        :param m: The number of functional dependencies to generate.
+        :return: A list of m functional dependencies.
+        """
+        fds_set = set()
+        while len(fds_set) < m:
+            fds_set.add(self.generate_fd())
+        return list(fds_set)
