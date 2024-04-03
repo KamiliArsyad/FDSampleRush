@@ -1,6 +1,8 @@
+from math import comb
+
 import numpy as np
 from scipy.stats import rv_continuous
-
+import random
 from src.utils.binary_word import BinaryWord
 
 
@@ -24,6 +26,14 @@ class BinaryWordGenerator:
         return BinaryWord(length, value)
 
     @staticmethod
+    def convert_number_of_ones_to_int(num_attributes_x, num_attributes_relation):
+        binary_array = [1] * num_attributes_x + [0] * (num_attributes_relation - num_attributes_x)
+        random.shuffle(binary_array)
+        binary_string = ''.join(map(str, binary_array))
+        value = int(binary_string, 2)
+        return value
+
+    @staticmethod
     def from_distribution(length, distribution='uniform', **kwargs) -> BinaryWord:
         """
         Returns a binary word generated from a given distribution.
@@ -34,6 +44,16 @@ class BinaryWordGenerator:
         """
         if distribution == 'uniform':
             value = np.random.randint(0, 2**length)
+        elif distribution == 'realistic':
+            # based on distribution of size of X in X -> Y
+            num_attributes_relation = 2**length
+            num_attributes_x = random.choices(range(num_attributes_relation + 1),
+                                   weights=np.array([comb(num_attributes_relation, i)
+                                                     for i in range(num_attributes_relation + 1)])
+                                           / sum([comb(20, i) for i in range(num_attributes_relation + 1)]),
+                                   k=1)[0]
+            value = BinaryWordGenerator.convert_number_of_ones_to_int(num_attributes_x, num_attributes_relation)
+
         elif isinstance(distribution, rv_continuous):
             # Using SciPy distribution to generate a number
             value = int(distribution.rvs(**kwargs) * (2**length))
