@@ -1,7 +1,7 @@
 import time
 from typing import Tuple
 
-from numpy import random
+from numpy import random, zeros
 
 from src.func_dependencies.generator import FDGenerator
 from src.normalization import test_normal_form
@@ -33,9 +33,10 @@ class FDSampleRushResult:
         Starts the normalization tests.
         """
         start_time = time.time()
-        self.result_bcnf = test_normal_form.is_bcnf(self.num_attributes, self.fds)
-        self.result_3nf = True if self.result_bcnf else test_normal_form.is_3nf(self.fds)
-        self.result_2nf = True if self.result_3nf else test_normal_form.is_2nf(self.fds)
+        normal_form_tester = test_normal_form.NormalFormChecker(self.num_attributes, self.fds)
+        self.result_bcnf = normal_form_tester.is_bcnf()
+        self.result_3nf = True if self.result_bcnf else normal_form_tester.is_3nf()
+        self.result_2nf = True if self.result_3nf else normal_form_tester.is_2nf()
         self.result_time = time.time() - start_time
 
     @staticmethod
@@ -145,3 +146,51 @@ class FDSampleRush:
         if not is_debug:
             return
         print(*args)
+
+
+class FDBinaryAdapter:
+    def __init__(self, attributes):
+        # Assuming attributes is a list of unique attribute names
+        self.attribute_indices = {attr: index for index, attr in enumerate(attributes)}
+        self.attributes = attributes  # To translate back from binary to strings
+
+    def translate_to_binary(self, fds):
+        return [(self._fd_to_binary(fd[0]), self._fd_to_binary(fd[1])) for fd in fds]
+
+    def translate_from_binary(self, binary_fds):
+        return [[self._binary_to_fd(bw) for bw in fd] for fd in binary_fds]
+
+    def _fd_to_binary(self, attr_list):
+        # Initialize a binary representation with all zeros
+        binary_rep = zeros(len(self.attribute_indices), dtype=int)
+        for attr in attr_list:
+            # Set the bit at the index corresponding to the attribute
+            index = self.attribute_indices[attr]
+            binary_rep[index] = 1
+        # Convert the binary array to a binary word
+        return BinaryWord(len(self.attribute_indices), int(''.join(map(str, binary_rep)), 2))
+
+    def _binary_to_fd(self, binary_word):
+        # Convert the binary word to its binary string representation
+        binary_str = format(binary_word.value, f'0{binary_word.length}b')
+        # Find which bits are set and translate back to the attribute names
+        return [self.attributes[idx] for idx, bit in enumerate(binary_str) if bit == '1']
+
+    @staticmethod
+    def create_attribute_list(fds_list):
+        """
+        Creates a list of unique attributes from a set of functional dependencies.
+
+        :param fds_list: A list of functional dependencies, where each dependency is
+                         represented as a list of two lists.
+        :return: A list of unique attributes.
+        """
+        attributes = set()
+        for fd in fds_list:
+            determinant, dependent = fd
+            attributes.update(determinant)
+            attributes.update(dependent)
+
+        return sorted(list(attributes))
+
+

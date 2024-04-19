@@ -51,11 +51,15 @@ class BinaryWord:
     def zeroes(self):
         return BinaryWord(self.length, 0)
 
+
     def __and__(self, other):
         return BinaryWord(self.length, self.value & other.value)
 
     def __or__(self, other):
         return BinaryWord(self.length, self.value | other.value)
+
+    def __getitem__(self, position):
+        return self.get_bit(position)
 
     def __xor__(self, other):
         return BinaryWord(self.length, self.value ^ other.value)
@@ -83,3 +87,6 @@ class BinaryWord:
 
     def __hash__(self):
         return hash((self.value, self.length))
+
+    def copy(self):
+        return BinaryWord(self.length, self.value)

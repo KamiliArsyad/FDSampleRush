@@ -1,10 +1,10 @@
 from math import comb
 
 import numpy as np
-from scipy.stats import rv_continuous
 import random
 from src.utils.binary_word import BinaryWord
 
+rv_continuous = 'HELLO'
 
 class BinaryWordGenerator:
     """
